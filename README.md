@@ -126,7 +126,7 @@ TCP does **not** require all agents to use identical Frozen Kernel implementatio
 
 |File                       |Description                                                                                                                                              |
 |---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
-|`trust_chain_protocol.docx`|Full framework document: problem definition, architecture, four practical scenarios, known limitations, six open research questions, intellectual lineage|
+|`trust_chain_protocol_v3.docx`|Full framework document: problem definition, architecture, scenarios, limitations, open questions (will be converted to Markdown shortly)|
 |`README.md`                |This file                                                                                                                                                |
 
 -----
