@@ -35,7 +35,7 @@ Three safety frameworks, three levels of coverage:
 |**Frozen Kernel (Single-Agent)**|One AI’s internal reasoning, hard constraints, failure mode prevention|Cannot verify that incoming instructions were legitimately authorized by a human         |
 |**Neither**                     |—                                                                     |Agent-to-agent instruction chains, multi-agent trust hierarchies, scope drift across hops|
 
-The emergence of OpenClaw (November 2024) and its Moltbook peer-to-peer agent network made this gap impossible to ignore. Agents operating through WhatsApp and iMessage — communicating with each other without human intermediation, booking restaurants, debugging code, managing email — represent a class of autonomous behavior that neither model was built for.
+The emergence of OpenClaw (November 2024) and its Moltbook peer-to-peer agent network made this gap impossible to ignore. Agents operating through WhatsApp and iMessage — communicating with each other without human intermediation, booking restaurants, debugging code, managing email — represent a class of autonomous behavior that neither model was built for. The field term for this emerging infrastructure is the **Internet of Agents**: distributed environments where autonomous AI agents share context, verify identities, and synchronize actions across interconnected networks. TCP is a proposed safety layer for that environment.
 
 The WSJ coverage of OpenAI’s acquisition of the project (February 2026) marked the point at which the coordination safety problem became mainstream and urgent.
 
@@ -56,6 +56,7 @@ This is the **trust propagation problem**. It produces five documented failure m
 - **Compounding Constraint Erosion** — Soft constraints applied differently at each hop nullify the original hard constraint across the chain.
 - **Untraceable Action Chains** — When something goes wrong, no auditable record exists of who authorized what at whose direction.
 - **Intent Drift** — Natural language intent, reinterpreted at each hop, accumulates semantic drift. The final action is technically coherent and practically wrong.
+- **Context Contamination** — Malicious, incorrect, or misleading information propagates through the agent network and drives downstream agents into problematic behaviors. Unlike Authority Spoofing (forged tokens) or Intent Drift (language degradation), Context Contamination involves inputs that are structurally valid and pass chain verification — but are semantically poisoned. The agent acts correctly on bad data.
 
 -----
 
@@ -161,6 +162,8 @@ If you’re working on any of these, issues and PRs are open.
 
 ## Intellectual Lineage
 
+**Byzantine Fault Tolerance (BFT)** — Distributed systems research addressing consensus when some participants may be faulty or adversarial. BFT protocols require quorum before executing high-impact actions. TCP’s Chain of Custody arrives at a parallel insight from a different direction: authorization cannot proceed without a verifiable chain, just as BFT says action cannot proceed without quorum. Complementary approaches — BFT at the consensus layer, TCP at the authorization layer — that could be stacked in a full implementation.
+
 **Constraint Programming Hierarchy** — Borning’s ThingLab (1981) and the Handbook of Constraint Programming (Chapter 9) establish the three-layer authority model that underlies both the Frozen Kernel and TCP. The principle that hard constraints at the base cannot be dissolved by soft constraints above is directly inherited.
 
 **Frozen Kernel Architecture** — The [Frozen Kernel](https://github.com/richard-porter/frozen-kernel) (Richard Porter, 2025) is the single-agent precursor to TCP. TCP is explicitly its upward extension — from agent internals to agent networks. The Frozen Kernel’s documented failure modes (FFS, SES, Upsell Trap, Front-Load Bias) informed the multi-agent failure modes documented here.
@@ -186,11 +189,12 @@ This repository is part of a larger body of work on human-AI collaboration safet
 
 ## Version History
 
-|Version|Date         |Status                                                                                        |
-|-------|-------------|----------------------------------------------------------------------------------------------|
-|0.1    |February 2026|Initial draft. Problem definition, core architecture, three components. Open for critique.    |
-|0.2    |February 2026|Diagrams added from companion slide deck. Minor text refinements.                             |
-|1.0    |TBD          |First stable. Requires: formal grammar definition, threshold validation, agent identity model.|
+|Version|Date         |Status                                                                                                        |
+|-------|-------------|--------------------------------------------------------------------------------------------------------------|
+|0.1    |February 2026|Initial draft. Problem definition, core architecture, three components. Open for critique.                    |
+|0.2    |February 2026|Diagrams added from companion slide deck. Minor text refinements.                                             |
+|0.3    |February 2026|Context Contamination added as failure mode six. BFT lineage added. Internet of Agents terminology introduced.|
+|1.0    |TBD          |First stable. Requires: formal grammar definition, threshold validation, agent identity model.                |
 
 -----
 
