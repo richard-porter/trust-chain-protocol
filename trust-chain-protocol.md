@@ -890,5 +890,3 @@ genuine gaps, not false modesty.
 
 ## GitHub: Richard Porter / AI Safety Frameworks | Issues and PRs
 welcome.
-
-*END OF DOCUMENT — Trust Chain Protocol v0.5*
