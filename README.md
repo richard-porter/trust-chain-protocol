@@ -7,6 +7,7 @@ If you need the network-layer extension of the Frozen Kernel.
 
 *Part of the [Richard Porter AI Safety ecosystem](https://github.com/richard-porter/richard-porter)*
 
+For OWASP ASI Top 10 alignment and architecture overview → [owasp-asi-alignment.md](./owasp-asi-alignment.md)
 -----
 
 > *The Frozen Kernel is what safety looks like when the ‘user’ is an AI.*
