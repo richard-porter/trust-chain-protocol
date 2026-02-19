@@ -8,6 +8,7 @@ That means contributions are both welcome and genuinely useful right now.
 
 The open research questions in the README are the best starting points. Specifically:
 
+- **Reference implementation** — This is the single most valuable contribution TCP could receive. A sandboxed two-agent simulation demonstrating how Delegation Grammar prevents scope creep across hops, and how Chain of Custody produces an auditable log, would transform the protocol from a specification into a testable artifact. A mock calendar/email environment is sufficient. Systems implementation experience required.
 - **Agent identity infrastructure** — TCP assumes agents can be identified well enough to validate signatures. In open networks, this is unsolved. Lightweight approaches that avoid central authority are the priority.
 - **Delegation grammar completeness** — Can a closed enumeration cover 90% of real-world agentic use cases without requiring natural language interpretation?
 - **Scope decay threshold validation** — The hop thresholds are reasonable starting points, not empirically validated. If you have data or a principled argument for different thresholds, open an issue.
