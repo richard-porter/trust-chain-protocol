@@ -1,0 +1,57 @@
+graph TD
+H[“👤 Human Principal<br/>(Authorization Origin)”]
+
+```
+subgraph FK["🧊 Frozen Kernel — Single Agent Safety Floor"]
+    A1["Agent A<br/><i>Delegation Depth: 2</i>"]
+    A2["Agent B<br/><i>Delegation Depth: 1</i>"]
+    A3["Agent C<br/><i>Delegation Depth: 0</i>"]
+end
+
+subgraph DG["📋 Delegation Grammar"]
+    TOKEN["Token Fields:<br/>• Action Scope (closed enum)<br/>• Resource Bounds<br/>• Delegation Depth<br/>• Expiry Timestamp"]
+end
+
+subgraph CC["🔗 Chain of Custody"]
+    LOG["Pre-Action Record:<br/>• Receiving agent ID<br/>• Instruction hash<br/>• Delegation token<br/>• Timestamp + Signature"]
+end
+
+subgraph SD["📉 Scope Decay"]
+    HOP0["Hop 0 — Full scope"]
+    HOP1["Hop 1 — Full scope"]
+    HOP2["Hop 2 — No write/send"]
+    HOP3["Hop 3 — Read-only"]
+    HOP4["Hop 4+ — ⛔ REFUSE<br/>Surface to human"]
+    HOP0 --> HOP1 --> HOP2 --> HOP3 --> HOP4
+end
+
+H -->|"Issues delegation token"| A1
+A1 -->|"Sub-delegates subset only"| A2
+A2 -->|"Sub-delegates subset only"| A3
+
+DG -.->|"Governs what can be delegated"| A1
+DG -.->|"Governs what can be delegated"| A2
+CC -.->|"Required before action"| A1
+CC -.->|"Required before action"| A2
+CC -.->|"Required before action"| A3
+SD -.->|"Narrows scope at each hop"| A2
+SD -.->|"Narrows scope at each hop"| A3
+
+FAIL["⚠️ Failure Modes Addressed:<br/>Scope Creep by Delegation<br/>Authority Spoofing<br/>Intent Drift<br/>Untraceable Action Chains<br/>Context Contamination<br/>Constraint Erosion"]
+
+A1 & A2 & A3 -.-> FAIL
+
+style H fill:#1a1a2e,color:#fff,stroke:#4a90d9
+style FK fill:#0d2137,color:#fff,stroke:#4a90d9
+style DG fill:#0d3320,color:#fff,stroke:#27ae60
+style CC fill:#1a1a0d,color:#fff,stroke:#f39c12
+style SD fill:#2d0d0d,color:#fff,stroke:#e74c3c
+style FAIL fill:#1a0d2e,color:#fff,stroke:#9b59b6
+style TOKEN fill:#0d3320,color:#fff,stroke:#27ae60
+style LOG fill:#1a1a0d,color:#fff,stroke:#f39c12
+style HOP0 fill:#27ae60,color:#fff,stroke:#27ae60
+style HOP1 fill:#27ae60,color:#fff,stroke:#27ae60
+style HOP2 fill:#f39c12,color:#fff,stroke:#f39c12
+style HOP3 fill:#e67e22,color:#fff,stroke:#e67e22
+style HOP4 fill:#e74c3c,color:#fff,stroke:#e74c3c
+```
