@@ -5,7 +5,7 @@ Network-layer safety architecture for multi-agent AI systems. Trust propagation,
 
 **A Coordination Safety Framework for Multi-Agent AI Systems**
 
-*Part of the [Richard Porter AI Safety ecosystem](https://github.com/richard-porter/richard-porter)*
+*Part of the [Richard Porter AI Safety ecosystem](https://github.com/richard-porter)*
 
 For OWASP ASI Top 10 alignment and architecture overview → [owasp-asi-alignment.md](./owasp-asi-alignment.md)
 -----
@@ -210,7 +210,7 @@ This repository is part of a larger body of work on human-AI collaboration safet
 
 - 🧊 **[Frozen Kernel](https://github.com/richard-porter/frozen-kernel)** — The single-agent safety architecture TCP extends. Start here if you’re new to this work.
 - 📖 **[AI Collaboration Field Guide](https://github.com/richard-porter/ai-collaboration-field-guide)** — Practical human skills for working with AI without losing sovereignty. Includes the diagnostic vocabulary for named AI failure modes.
-- 📊 **[Adult Mode Safety Ledger](https://github.com/richard-porter/adult-mode-safety-ledger)** — A public safety scorecard for high-gain AI conversational features. Binary architectural tests across five platforms.
+- 📊 **[Adult Mode Safety Ledger](https://github.com/richard-porter/safety-ledgers)** — A public safety scorecard for high-gain AI conversational features. Binary architectural tests across five platforms.
 - 🔬 **[Dimensional Authorship](https://github.com/richard-porter/dimensional-authorship)** — The research home. Where the frameworks get tested against a real creative project.
 
 -----
