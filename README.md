@@ -1,4 +1,4 @@
-# richard-porter-trust-chain-protocol
+# trust-chain-protocol
 Network-layer safety architecture for multi-agent AI systems. Trust propagation, session governance, agent identity
 
 ## 🔗 Trust Chain Protocol (TCP)
