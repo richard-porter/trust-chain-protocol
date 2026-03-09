@@ -450,13 +450,10 @@ research area.
 
 ## 6.5 Performance Overhead
 
-Chain of custody verification adds latency at each hop. For
-high-frequency automated tasks, this overhead may be prohibitive. The
-framework will need performance optimization work before deployment in
-high-throughput contexts. GraphGuard OS reports 21 policy queries per
-action in its 7-step validation pipeline — a directly analogous
-overhead cost acknowledged in their Limitations and Tradeoffs section.
-Both frameworks pay a real price for deterministic safety enforcement.
+Chain of custody verification adds latency at each hop. For high-frequency automated tasks, this overhead may be prohibitive at uniform verification depth. However, the conflict between safety and performance is partially resolvable: not all hops carry equal risk, and not all actions carry equal consequence. A tiered verification model — where verification depth is a function of action risk class and delegation depth rather than a constant — addresses the overhead problem without weakening the authorization architecture.
+Specifically: token validity checks are sufficient for read-only actions at shallow delegation depth; full chain verification is reserved for write, send, and execute actions, and for any action at depth thresholds where scope decay already applies heightened scrutiny. The chain of custody exists at every hop regardless — the tiered model governs how deeply it is interrogated before low-risk actions proceed, not whether it exists.
+A residual remains: pre-authorized, bounded, reversible micro-actions at high frequency may require an explicit exemption class even within a tiered model. This is a smaller and more tractable design problem than uniform verification overhead, and is scoped as a implementation parameter rather than an architectural limitation.
+See also: Research Question 6.
 
 ## 6.6 Adversarial Testing Gap
 
@@ -617,22 +614,20 @@ invite collaboration rather than paper over gaps.
 1. What is the minimum viable delegation grammar that covers 90% of
    real-world agentic use cases without requiring natural language
    interpretation?
-1. Can scope decay thresholds be derived formally from first
+2. Can scope decay thresholds be derived formally from first
    principles, or must they be empirically calibrated per deployment
    context?
-1. Is a lightweight decentralized agent identity infrastructure
+3. Is a lightweight decentralized agent identity infrastructure
    achievable without creating the centralization risks of a
    certificate authority model?
-1. How does TCP interact with agents that have memory across sessions?
+4. How does TCP interact with agents that have memory across sessions?
    Does learned context from previous interactions constitute an
    implicit authorization that TCP should respect or override?
-1. What is the correct behavior when a TCP-compliant agent receives
+5. What is the correct behavior when a TCP-compliant agent receives
    instructions from a non-compliant agent? Refuse all instructions?
    Accept with reduced trust? Flag and proceed?
-1. Can the chain of custody mechanism be made efficient enough for
-   high-frequency agentic tasks, or does TCP require a tiered model
-   where some task classes are exempt from full chain verification?
-1. Should TCP Scope Decay be purely structural (depth-based) or
+6. Can the chain of custody mechanism be made efficient enough for high-frequency agentic tasks? Structural analysis of the latency/safety conflict (Evaporating Cloud, §6.5) suggests the answer is yes for most action classes, through a tiered verification model where depth of chain interrogation is a function of action risk class and delegation depth. The remaining open question is narrower: what is the correct treatment of pre-authorized, bounded, reversible micro-actions where even token validity checks create prohibitive overhead at scale? Options include an explicit exemption class, a pre-authorization cache with bounded TTL, or a separate lightweight protocol for micro-action classes. This requires empirical validation against real deployment throughput data before a recommendation is possible.
+7. Should TCP Scope Decay be purely structural (depth-based) or
    incorporate behavioral history? GraphGuard OS Adaptive Budget
    Manager demonstrates that cautious agents can earn expanded
    operational scope while aggressive patterns trigger automatic
@@ -640,13 +635,13 @@ invite collaboration rather than paper over gaps.
    equally. A behavioral reputation layer within the authorization
    chain might produce more precise safety boundaries than static depth
    thresholds alone.
-1. What is the correct revocation model in an agent network? Fearne
+8. What is the correct revocation model in an agent network? Fearne
    asks this directly in the context of Moltbook. If a delegating agent
    is found to be compromised mid-chain, how should downstream agents
    that have already received tokens be notified? A revocation protocol
    may require the lightweight identity infrastructure named as an open
    problem in Section 6.4.
-1. How should TCP handle temporal evidence staleness? TCP Delegation
+9. How should TCP handle temporal evidence staleness? TCP Delegation
    Tokens carry an Expiry field governing authorization lifetime.
    GraphGuard OS Temporal Contract Manager enforces separate freshness
    windows on the evidence used to justify decisions — lab results
