@@ -135,6 +135,7 @@ coordination that do not exist in single-agent systems:
   natural language, is interpreted and re-interpreted at each hop.
   Semantic drift accumulates. The final action may be technically
   coherent but practically contrary to what the human wanted.
+At network scale, accumulated semantic drift across a coordinated multi-account pipeline is the mechanism behind Provenance Laundering — the adversarial external variant of this failure mode. See Frozen Kernel Diagnostic Vocabulary.
 - Context Contamination — Malicious, incorrect, or misleading
   information propagates through the agent network and drives
   downstream agents into problematic behaviors. Unlike Authority
@@ -143,6 +144,9 @@ coordination that do not exist in single-agent systems:
   and pass chain verification — but are semantically poisoned. The
   agent acts correctly on bad data. Detection requires content-level
   validation that authorization-layer checks alone cannot provide.
+
+Empirical case — Provenance Laundering as Context Contamination at scale:
+The Anthropic distillation attack report (February 2026) documented a real-world instance of Context Contamination operating at network scale. Three actors — DeepSeek, Moonshot AI, and MiniMax — used approximately 24,000 fraudulent accounts to generate over 16 million exchanges with Claude, harvesting model behavior while routing traffic through patterns individually indistinguishable from legitimate queries. Each individual transaction passed authorization-layer checks. The contamination was in the aggregate architecture those transactions served. This is Context Contamination’s worst case: not a single poisoned input, but a distributed pipeline engineered so that no individual transaction reveals the aggregate intent. TCP’s authorization layer cannot detect this pattern. Content-layer validation is necessary but also insufficient — the detection gap is at the network topology level, not the message level. Documented in the Frozen Kernel Diagnostic Vocabulary as Provenance Laundering. See also: Intent Drift (§2.2) — Provenance Laundering and Intent Drift are structurally parallel: both exploit the gap between what is locally verifiable and what the aggregate pipeline is doing.
 
 ## 2.3 Why Existing Approaches Are Insufficient
 
