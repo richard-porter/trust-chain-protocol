@@ -8,7 +8,8 @@ Network-layer safety architecture for multi-agent AI systems. Trust propagation,
 
 *Part of the [Richard Porter AI Safety ecosystem](https://github.com/richard-porter)*
 
-For OWASP ASI Top 10 alignment and architecture overview → [owasp-asi-alignment.md](./owasp-asi-alignment.md)
+For OWASP ASI Top 10 alignment and architecture overview → [owasp-asi-alignment.md](./owasp-asi-alignment.md)  
+For OWASP DSGAI 2026 mapping across the full ecosystem → [owasp-dsgai-mapping.md](https://github.com/richard-porter/where-to-start/blob/main/owasp-dsgai-mapping.md)
 
 -----
 
@@ -130,31 +131,20 @@ TCP does **not** require all agents to use identical Frozen Kernel implementatio
 |File                     |Description                                                                                      |
 |-------------------------|-------------------------------------------------------------------------------------------------|
 |`trust-chain-protocol.md`|Full framework document: problem definition, architecture, scenarios, limitations, open questions|
-|`owasp-asi-alignment.md` |OWASP ASI Top 10 alignment brief and architecture overview                                       |
+|`owasp-asi-alignment.md` |OWASP ASI Top 10 alignment brief — TCP coverage against each risk class                          |
 |`README.md`              |This file                                                                                        |
 
 -----
 
-## OWASP ASI Top 10 Mapping
+## OWASP Coverage Summary
 
-The OWASP Top 10 for Agentic Applications 2026 is the emerging peer-reviewed standard for agentic security risk, developed with input from over 100 experts including NIST, Microsoft, AWS, and Cisco. TCP maps against it as follows:
+Full OWASP ASI Top 10 mapping is in [owasp-asi-alignment.md](./owasp-asi-alignment.md).
 
-|Risk |Category                          |TCP Coverage      |Notes                                                                                                                                                  |
-|-----|----------------------------------|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-|ASI01|Agent Goal Hijack                 |**Partial**       |Chain of Custody verifies authorization, not content. Context Contamination names this failure mode; content-layer validation is a required complement.|
-|ASI02|Tool Misuse                       |**Strong**        |Delegation Grammar’s Action Scope and Resource Bounds implement OWASP’s “least agency” principle at the token level.                                   |
-|ASI03|Identity & Privilege Abuse        |**Strong**        |TCP’s core problem statement. Chain of Custody closes the attribution gap. “Scope can only narrow” prevents credential escalation.                     |
-|ASI04|Supply Chain Compromise           |**Not Covered**   |Honest gap. A compromised tool with a valid FK signature passes TCP verification. Requires separate tooling (e.g., SecureClaw).                        |
-|ASI05|Insecure Inter-Agent Communication|**Primary Domain**|TCP’s primary domain. Cisco L8/L9 address protocol/semantic layers; TCP addresses the authorization layer. Combined coverage is comprehensive.         |
-|ASI06|Unexpected Code Execution         |**Not Covered**   |Out of scope by design. TCP governs delegation authorization, not code generation.                                                                     |
-|ASI07|Memory & Context Poisoning        |**Partial**       |Expiry and Delegation Depth limit temporal authorization scope. Partial mitigation only.                                                               |
-|ASI08|Cascading Failures                |**Moderate**      |Scope Decay’s “4+ hops = refusal” is a blast radius containment mechanism.                                                                             |
-|ASI09|Human-Agent Trust Exploitation    |**Indirect**      |Scope Decay forces human re-authorization at depth thresholds. Frozen Kernel anti-sycophancy is the more direct mitigation.                            |
-|ASI10|Rogue Agents                      |**Partial**       |TCP refuses non-compliant agents. Sophisticated rogue agents with valid-looking chain signatures exploit the agent identity gap.                       |
+TCP’s primary value is at **ASI05** (Insecure Inter-Agent Communication), **ASI03** (Identity & Privilege Abuse), and **ASI02** (Tool Misuse) — mapping directly to Chain of Custody, Delegation Grammar, and Scope Decay. Honest gaps at **ASI04** (Supply Chain Compromise) and **ASI06** (Unexpected Code Execution) require different tooling.
 
-TCP’s primary value in the OWASP framework is at **ASI05, ASI03, and ASI02** — mapping directly to Chain of Custody, Delegation Grammar, and Scope Decay. Gaps at ASI04 and ASI06 are honest and require different tooling.
+**Relationship to SecureClaw:** SecureClaw (Adversa AI, February 2026) provides tool-level hardening for OpenClaw installations. TCP governs the authorization layer; SecureClaw secures individual nodes. A fully secured Internet of Agents deployment uses both.
 
-**Relationship to SecureClaw:** SecureClaw (Adversa AI, February 2026) provides tool-level hardening and behavioral auditing for OpenClaw installations, mapped against all 10 OWASP ASI threat classes. TCP governs the authorization layer; SecureClaw secures individual nodes. A fully secured Internet of Agents deployment would use both — SecureClaw at each node, TCP at the network layer.
+For ecosystem-wide OWASP DSGAI 2026 coverage → [owasp-dsgai-mapping.md](https://github.com/richard-porter/where-to-start/blob/main/owasp-dsgai-mapping.md)
 
 -----
 
@@ -224,6 +214,7 @@ This repository is part of a larger body of work on human-AI collaboration safet
 |0.4    |February 2026|OWASP ASI Top 10 mapping added. SecureClaw and Cisco L8/L9 referenced. Sections renumbered.                                                     |
 |0.5    |February 2026|Three new lineage citations: Fearne/Moltbook network-layer analysis, Galliera et al. MARL safety paper, GraphGuard OS convergent implementation.|
 |0.6    |February 2026|Major GraphGuard OS expansion. Three new Known Limitations. Three new Research Questions. SecureClaw separated as standalone lineage entry.     |
+|0.7    |March 2026   |README: OWASP inline table replaced with summary + pointer to owasp-asi-alignment.md (Item 2). DSGAI mapping pointer added (Item 38).           |
 |1.0    |TBD          |First stable. Requires: formal grammar definition, threshold validation, agent identity model.                                                  |
 
 -----
