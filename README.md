@@ -15,7 +15,8 @@ For OWASP DSGAI 2026 mapping across the full ecosystem → [owasp-dsgai-mapping.
 
 > *The Frozen Kernel is what safety looks like when the ‘user’ is an AI.*
 > *TCP is what safety looks like when AI agents are instructing other AI agents.*
-> *One addresses the internals. The other addresses the network. Both are required.*
+> *EML is what epistemic integrity looks like between generation and enforcement.*
+> *One addresses the internals. One addresses the network. One addresses the output. All three are required.*
 
 -----
 
@@ -25,7 +26,9 @@ The Trust Chain Protocol is a proposed safety architecture for multi-agent AI sy
 
 It is the **network-layer extension** of the [Frozen Kernel](https://github.com/richard-porter/frozen-kernel). Where the Frozen Kernel governs what a single AI will and won’t do, TCP governs how AI agents authorize each other — and what happens when that authorization chain breaks, drifts, or gets spoofed.
 
-This repository exists because a gap opened that no existing safety framework was designed to address.
+This repository also houses the **Epistemic Mediation Layer (EML)** — a companion architecture that sits between generation and constraint enforcement, introducing adversarial friction to prevent distorted model output from being delivered as uncontested authority. EML and TCP operate at the same architectural tier: both are protocol-layer documents governing behavior above the Frozen Kernel but below output delivery.
+
+This repository exists because gaps opened that no existing safety framework was designed to address.
 
 -----
 
@@ -126,13 +129,36 @@ TCP does **not** require all agents to use identical Frozen Kernel implementatio
 
 -----
 
+## Relationship to the Epistemic Mediation Layer
+
+EML addresses a different but adjacent gap: distorted generative output delivered as authoritative response. Where TCP governs *authorization* (what agents may instruct each other to do), EML governs *epistemic quality* (whether what gets delivered is appropriately hedged, challenged, and degraded under uncertainty).
+
+The two layers are complementary and non-overlapping:
+
+|EML (Epistemic Mediation)                              |TCP (Authorization Chain)                                   |
+|-------------------------------------------------------|------------------------------------------------------------|
+|Sits between generation and constraint enforcement     |Sits between agents in a multi-agent network                |
+|Interrogates epistemic quality of output               |Verifies authorization legitimacy of instructions           |
+|Produces degradation levels (0–3)                      |Produces scope decay across hops                            |
+|Primary threat: distorted output delivered as authority|Primary threat: unauthorized or scope-expanded agent actions|
+|Failure mode: calibration theater, authority laundering|Failure mode: scope creep, intent drift, authority spoofing |
+
+Future extension: TCP belief tokens. Each delegation token currently carries action scope. A natural extension is to attach an epistemic chain of custody alongside the action chain — tracking confidence, provenance, and uncertainty state as claims propagate through agent networks. This is deferred to a future version.
+
+EML informs Frozen Kernel enforcement. It does not replace it.
+
+-----
+
 ## What’s in This Repository
 
-|File                     |Description                                                                                      |
-|-------------------------|-------------------------------------------------------------------------------------------------|
-|`trust-chain-protocol.md`|Full framework document: problem definition, architecture, scenarios, limitations, open questions|
-|`owasp-asi-alignment.md` |OWASP ASI Top 10 alignment brief — TCP coverage against each risk class                          |
-|`README.md`              |This file                                                                                        |
+|File                       |Description                                                                                                       |
+|---------------------------|------------------------------------------------------------------------------------------------------------------|
+|`trust-chain-protocol.md`  |Full framework document: problem definition, architecture, scenarios, limitations, open questions                 |
+|`owasp-asi-alignment.md`   |OWASP ASI Top 10 alignment brief — TCP coverage against each risk class                                           |
+|`eml-spec-v0.1.md`         |Epistemic Mediation Layer full specification — threat model, components, degradation protocol, ledger integration |
+|`eml-minimal-slice-v0.1.md`|First implementable EML slice: ACG + Degradation Protocol — probe evaluation method and scoring rubric            |
+|`p4-probe-pack-v0.1.md`    |P4 probe pack — 10 adversarial prompts targeting interpretive escalation; baseline vs. mediated evaluation harness|
+|`README.md`                |This file                                                                                                         |
 
 -----
 
@@ -141,6 +167,8 @@ TCP does **not** require all agents to use identical Frozen Kernel implementatio
 Full OWASP ASI Top 10 mapping is in [owasp-asi-alignment.md](./owasp-asi-alignment.md).
 
 TCP’s primary value is at **ASI05** (Insecure Inter-Agent Communication), **ASI03** (Identity & Privilege Abuse), and **ASI02** (Tool Misuse) — mapping directly to Chain of Custody, Delegation Grammar, and Scope Decay. Honest gaps at **ASI04** (Supply Chain Compromise) and **ASI06** (Unexpected Code Execution) require different tooling.
+
+EML’s primary value is at **ASI01** (Prompt Injection / Epistemic Manipulation) and **ASI08** (Overreliance / Automation Bias) — addressing the output-layer trust problem that TCP’s authorization layer does not reach.
 
 **Relationship to SecureClaw:** SecureClaw (Adversa AI, February 2026) provides tool-level hardening for OpenClaw installations. TCP governs the authorization layer; SecureClaw secures individual nodes. A fully secured Internet of Agents deployment uses both.
 
@@ -162,6 +190,8 @@ These gaps are documented openly, not papered over.
 
 **Performance overhead.** Chain of custody verification adds latency at each hop. High-frequency agentic tasks may require a tiered model. This needs optimization work.
 
+**EML shared-substrate limitation.** If the EML mediator and the generator share training distribution, disagreement checks are weaker than they appear. Heterogeneous model mediation is the mitigation path; it is deferred to a future implementation slice. See `eml-spec-v0.1.md §8.1`.
+
 -----
 
 ## Open Research Questions
@@ -172,6 +202,8 @@ These gaps are documented openly, not papered over.
 1. How does TCP interact with agents that have memory across sessions — does learned context constitute implicit authorization that TCP should respect or override?
 1. What is the correct behavior when a TCP-compliant agent receives instructions from a non-compliant agent — refuse, accept with reduced trust, flag and proceed?
 1. Can the chain of custody mechanism be made efficient enough for high-frequency tasks, or does TCP require a tiered model where some task classes are exempt?
+1. Can TCP belief tokens — attaching epistemic chain of custody alongside action tokens — be implemented without introducing unacceptable latency or shared-substrate contamination?
+1. Does explicit instantiation of the EML privilege-reducing adversary principle in ACG prompts produce measurably different degradation behavior compared to a non-adversarial mediation baseline?
 
 If you’re working on any of these, issues and PRs are open.
 
@@ -191,6 +223,8 @@ If you’re working on any of these, issues and PRs are open.
 
 **Digital Certificate Trust Models** — The chain of custody mechanism draws from TLS certificate chain architecture — not the specific cryptography, but the insight that trust should be verifiable through a delegation chain back to a known anchor, rather than asserted by any individual participant.
 
+**Epistemic Mediation Research** — The EML architecture draws on epistemology of testimony (when and why to believe what we are told), formal argumentation theory (claim decomposition and defeat conditions), and adversarial robustness research. The privilege-reducing adversary principle is a novel framing derived from pressure-testing the architecture against known failure modes. See `eml-spec-v0.1.md` for full lineage.
+
 -----
 
 ## The Broader Ecosystem
@@ -200,22 +234,23 @@ This repository is part of a larger body of work on human-AI collaboration safet
 - 🧊 **[Frozen Kernel](https://github.com/richard-porter/frozen-kernel)** — The single-agent safety architecture TCP extends. Start here if you’re new to this work.
 - 📖 **[AI Collaboration Field Guide](https://github.com/richard-porter/ai-collaboration-field-guide)** — Practical human skills for working with AI without losing sovereignty. Includes the diagnostic vocabulary for named AI failure modes.
 - 📊 **[Safety Ledgers](https://github.com/richard-porter/safety-ledgers)** — A public safety scorecard for high-gain AI conversational features. Binary architectural tests across five platforms.
-- 🔬 **[Dimensional Authorship](https://github.com/richard-porter/dimensional-authorship)** — The research home. Where the frameworks get tested against a real creative project.
+- 🔬 **[Dimensional Authorship](https://github.com/richard-porter/dimensional-authorship)** — The research home. Where the frameworks get tested against a real creative project. Hosts `epistemic-standards.md` — the confidence grading register for all ecosystem claims.
 
 -----
 
 ## Version History
 
-|Version|Date         |Status                                                                                                                                          |
-|-------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------|
-|0.1    |February 2026|Initial draft. Problem definition, core architecture, three components. Open for critique.                                                      |
-|0.2    |February 2026|Diagrams added from companion slide deck. Minor text refinements.                                                                               |
-|0.3    |February 2026|Context Contamination added as failure mode six. BFT lineage added. Internet of Agents terminology introduced.                                  |
-|0.4    |February 2026|OWASP ASI Top 10 mapping added. SecureClaw and Cisco L8/L9 referenced. Sections renumbered.                                                     |
-|0.5    |February 2026|Three new lineage citations: Fearne/Moltbook network-layer analysis, Galliera et al. MARL safety paper, GraphGuard OS convergent implementation.|
-|0.6    |February 2026|Major GraphGuard OS expansion. Three new Known Limitations. Three new Research Questions. SecureClaw separated as standalone lineage entry.     |
-|0.7    |March 2026   |README: OWASP inline table replaced with summary + pointer to owasp-asi-alignment.md (Item 2). DSGAI mapping pointer added (Item 38).           |
-|1.0    |TBD          |First stable. Requires: formal grammar definition, threshold validation, agent identity model.                                                  |
+|Version|Date         |Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|-------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|0.1    |February 2026|Initial draft. Problem definition, core architecture, three components. Open for critique.                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|0.2    |February 2026|Diagrams added from companion slide deck. Minor text refinements.                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+|0.3    |February 2026|Context Contamination added as failure mode six. BFT lineage added. Internet of Agents terminology introduced.                                                                                                                                                                                                                                                                                                                                                                                                                |
+|0.4    |February 2026|OWASP ASI Top 10 mapping added. SecureClaw and Cisco L8/L9 referenced. Sections renumbered.                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|0.5    |February 2026|Three new lineage citations: Fearne/Moltbook network-layer analysis, Galliera et al. MARL safety paper, GraphGuard OS convergent implementation.                                                                                                                                                                                                                                                                                                                                                                              |
+|0.6    |February 2026|Major GraphGuard OS expansion. Three new Known Limitations. Three new Research Questions. SecureClaw separated as standalone lineage entry.                                                                                                                                                                                                                                                                                                                                                                                   |
+|0.7    |March 2026   |README: OWASP inline table replaced with summary + pointer to owasp-asi-alignment.md (Item 2). DSGAI mapping pointer added (Item 38).                                                                                                                                                                                                                                                                                                                                                                                         |
+|0.8    |March 2026   |EML added as companion architecture. Repository expanded to include eml-spec-v0.1.md, eml-minimal-slice-v0.1.md, p4-probe-pack-v0.1.md. New sections: EML relationship, EML/TCP comparison table, TCP belief token research question. Opening quote block updated. OWASP summary updated with EML coverage. EML shared-substrate limitation added to Known Limitations. Two new Research Questions (7, 8). EML lineage entry added. Broader Ecosystem entry for Dimensional Authorship updated to note epistemic-standards.md.|
+|1.0    |TBD          |First stable. Requires: formal grammar definition, threshold validation, agent identity model.                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
 -----
 
@@ -229,4 +264,5 @@ If you build on this framework, the only ask: **keep humans in the authorization
 
 *The Frozen Kernel is the floor beneath a single agent.*
 *TCP is the floor beneath the network.*
-*Neither replaces the other. Both are load-bearing.*
+*EML is the friction between generation and authority.*
+*None replaces the others. All are load-bearing.*
