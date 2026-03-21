@@ -1,7 +1,6 @@
 graph TD
-H[“Human Principal\nAuthorization Origin”]
+H["Human Principal\nAuthorization Origin"]
 
-```
 subgraph FK["Frozen Kernel — Single Agent Safety Floor"]
     A1["Agent A\nDelegation Depth: 2"]
     A2["Agent B\nDelegation Depth: 1"]
@@ -9,7 +8,7 @@ subgraph FK["Frozen Kernel — Single Agent Safety Floor"]
 end
 
 subgraph DG["Delegation Grammar"]
-    TOKEN["Token Fields\nAction Scope\nResource Bounds\nDelegation Depth\nExpiry Timestamp"]
+    TOKEN["Token Fields\nAction Scope\nResource Bounds\nDelegation Depth\nExpiry Timestamp\nContinuity"]
 end
 
 subgraph CC["Chain of Custody"]
@@ -54,4 +53,3 @@ style HOP1 fill:#27ae60,color:#fff,stroke:#27ae60
 style HOP2 fill:#f39c12,color:#fff,stroke:#f39c12
 style HOP3 fill:#e67e22,color:#fff,stroke:#e67e22
 style HOP4 fill:#e74c3c,color:#fff,stroke:#e74c3c
-```
