@@ -389,6 +389,41 @@ This section defines the EML/IGL relationship and establishes IGL v0.1 design re
 
 The IGL/Carver Policy Governance integration is not addressed here. That integration is a v0.2 concern — the boundary and requirements must be stable before the governance framing is applied.
 
+## 14.9 Closure and Execution Invariants
+
+**Status:** Derived from TCP closure grammar exchange (Steven Hensley/Richard Porter, March 2026). Formalizes the boundary conditions implicit in §14.3–14.6 as explicit architectural invariants. These invariants govern the IGL's operational constraints and are required for EML v0.2.
+
+The following five invariants apply to the IGL as a governance layer. They are stated in dependency order — each invariant depends on the ones preceding it.
+
+**Invariant 1 — Recomputation**
+Authority recomputes from canonical snapshot at each delegation step. The IGL's governance authority is not inherited from prior sessions, cached states, or intermediate evaluations. Each evaluation derives authority from the current canonical boundary state.
+
+**Invariant 2 — Closure Definition**
+Ambiguous inputs fail closed. Unresolved inputs halt execution. An IGL that receives a DP severity classification it cannot fully evaluate does not degrade gracefully — it produces a non-admissible result and halts. Partial evaluation is not permitted.
+
+**Invariant 3 — Closure Enforcement**
+All inputs required for IGL evaluation must be fully resolved, bound, and validated before evaluation begins. No lazy resolution, fallback sourcing, or deferred binding is permitted. The IGL does not resolve inputs during evaluation — the boundary state must be complete before the evaluation process starts. This requirement is cryptographically enforceable: the boundary state is bound before evaluation begins and cannot change during it.
+
+**Invariant 4 — Execution Exclusivity**
+The closed, pre-resolved canonical boundary state is the sole source of execution permission. No alternate execution path, inherited authority, deferred resolution, or post-boundary mutation may substitute for that state. An override that introduces any mechanism to resolve or source inputs outside the pre-resolved canonical boundary reintroduces delegated trust under a different name. Override must satisfy the same pre-resolution and closure constraints as base execution, or it collapses.
+
+**Invariant 5 — Diagnostic Admissibility**
+A diagnostic is admissible only if the evaluator state is fully resolved, dependency-complete, and bound to a canonical integrity contract before evaluation begins. The IGL is identified not by version alone but by a canonical integrity profile that resolves its required checks, dependencies, and failure semantics. All rule references must be present and fully resolved at the boundary. If any fail, the result is non-admissible diagnostics — not degraded diagnostics. "The system appears stable" is not a meaningful signal unless the evaluator producing that signal is itself admissible.
+
+**The logical chain:**
+- Authority exists only if it can be derived (Invariant 1)
+- Execution proceeds only from a closed boundary state (Invariants 2–3)
+- No alternate path bypasses that state (Invariant 4)
+- Diagnostic validity requires evaluator closure (Invariant 5)
+
+Each layer depends on the one below. None is bypassable without collapsing the chain.
+
+**Relationship to existing requirements:**
+- R1 (Structural separation) is the organizational precondition for Invariants 3–5. A prompt-level IGL sharing a generation context with the session it governs cannot satisfy closure enforcement or execution exclusivity.
+- R3 (Style signal evaluation) operates within the constraints defined by Invariants 2–3. Style evaluation must be complete before evaluation begins — it cannot be resolved during evaluation.
+- R4 (Non-generative outputs) is the behavioral expression of Invariant 4. An IGL output that functions as session content is an alternate execution path.
+- R5 (Escalation path) must itself satisfy Invariant 5 — the escalation mechanism is a diagnostic output and must be admissible under the same closure requirements.
+
 -----
 
 ## 15. Summary
